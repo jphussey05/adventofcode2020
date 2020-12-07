@@ -1,8 +1,14 @@
+debug = False
+
+import sys
 from pprint import pprint
 
+print(sys.getrecursionlimit())
+sys.setrecursionlimit(2000)
+print(sys.getrecursionlimit())
 def parse_contents(contents):
     if 'no other' in contents:
-        return None
+        return []
     else:
         items = contents.split(', ')
         return [(item.split()[0], ' '.join(item.split()[1:-1])) for item in items]
@@ -11,22 +17,32 @@ def parse_contents(contents):
 def bag_search(rule_dict, bag_list, target):
     # root is the tuple of the bag being searched
     # target is the shiny gold bag
-    print(f'-----received {bag_list}')
-    root = bag_list.pop(0)
-    print(f'  Root is {root}')
-    if rule_dict[root] == None:
-        print(f'  No children')
+    if debug:
+        print(f'-----received {bag_list}')
+    
+    if bag_list == []:
+        if debug:
+            print(f'  Exhausted List')
         return 0
     else:
+        root = bag_list.pop(0)
+        if debug:
+            print(f'  Root is {root} with children {rule_dict[root]}')
+
         for sub_bag in rule_dict[root]:
-            print(f'  Checking {sub_bag[1]} against {target}')
+            if debug:
+                print(f'  Checking {root}"s {sub_bag[1]} against {target}')
             if sub_bag[1] == target: # bag contains it directly
+                if debug:
+                    print(f'  ***bag contained directly, returning 1')
                 return 1
             else:  # add sub bag to list for recursive search
-                print(f'  {sub_bag} does not contain directly, adding to list')
+                if debug:
+                    print(f'  ***{sub_bag[1]} is not {target}, adding to list')
                 bag_list.append(sub_bag[1])
         
-        print(f'Calling recurisve with {bag_list}')
+        if debug:
+            print(f'  ***Calling recurisve with {bag_list}')
         return bag_search(rule_dict, bag_list, target)
             
 
@@ -41,8 +57,10 @@ for rule in rules:
 
 
 cnt = 0 
-print(rule_dict.keys())
+if debug:
+    print(rule_dict.keys())
 for bag in rule_dict.keys():
-    cnt += bag_search(rule_dict, [bag], 'shiny gold')
+    if bag != 'shiny gold':
+        cnt += bag_search(rule_dict, [bag], 'shiny gold')
 
 print(cnt)
