@@ -1,32 +1,54 @@
+from anytree import AnyNode, RenderTree
+from collections import Counter
 
 
+def get_valids(contents, jolts):
+    nexts = []
+    for c in contents:
+        if c == jolts:
+            continue
+        elif c <= jolts + 3:
+            nexts.append(c)
+        else:
+            return nexts
+    
+    return nexts
 
 
-with open('day10.txt') as fin:
-    contents = sorted([int(line.strip()) for line in fin.readlines()])
-
-current_jolts = 0
-
-print(contents)
-
-ones = 0
-threes = 0
-
-while len(contents) > 0:
-    adapter = contents.pop(0)
-    print(f'The next adapter is {adapter}, jolts are {current_jolts}')
-    if adapter <= current_jolts + 3:
-        print(f'  Adapter checks out')
-        if adapter == current_jolts + 1:
-            print(f'  That is a diff of 1')
-            ones += 1
-        elif adapter == current_jolts + 3:
-            print(f'  That is a diff of 3')
-            threes += 1
-        current_jolts = adapter
+def build_tree(parent, contents, jolts):
+    if contents:
+        nexts = get_valids(contents, jolts)
+        if nexts:
+            parent.children = [AnyNode(id=child) for child in nexts]
+            for child in parent.children:
+                new_jolts = child.id
+                start_idx = contents.index(child.id) + 1
+                build_tree(child, contents[start_idx:], new_jolts)
     else:
-        #bail?
-        print('Next item was not within 3')
-        break
+        return
 
-print(ones * (threes + 1))
+def count_the_shit(jolts):
+    max_jolts = jolts[-1] + 3
+    jolts.append(max_jolts)  # add the last value
+    jolt_cntr = Counter([0]) # create counter with a single occurrence of 0
+
+    for jolt in jolts:
+        print(f'Jolt is {jolt}')
+        jolt_cntr[jolt] = sum([
+            jolt_cntr[jolt - 1], 
+            jolt_cntr[jolt - 2], 
+            jolt_cntr[jolt - 3]])
+        print(f'Adding {jolt_cntr[jolt - 1]} {jolt-1}s + {jolt_cntr[jolt - 2]} {jolt-2}s + {jolt_cntr[jolt - 3]} {jolt-3}s')
+        print(f'New jolt_cntr is {jolt_cntr}')
+    return jolt_cntr[max_jolts]
+
+
+if __name__ == "__main__":
+    
+    with open('day10.txt') as fin:
+        contents = sorted([int(line.strip()) for line in fin.readlines()])
+
+    value = count_the_shit(contents)
+    print(value)
+
+
