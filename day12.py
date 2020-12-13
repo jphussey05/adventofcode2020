@@ -1,3 +1,6 @@
+import networkx as nx
+from matplotlib import pyplot as plt
+
 class Ship(object):
     def __init__(self):
         self.degree = 90
@@ -46,20 +49,36 @@ class Ship(object):
         return f'{self.pos} at a distance of {self.manhattan()} from origin, the waypoint is {self.waypoint}'
 
 
+
+def plot_graph(nodes, edges):
+    G = nx.Graph()
+    G.add_nodes_from(nodes)
+    G.add_edges_from(edges)
+
+    nx.draw(G, node_size=100, with_labels=True, font_size=6)
+    plt.savefig('day12.png')
+    plt.show()
+
+
 if __name__ == "__main__":
     with open('day12.txt') as fin:
         contents  = [line.strip() for line in fin.readlines()]
     
     ship = Ship()
     
+    nodes = [(0,0)]
+    edges = []
+
     for move in contents:
 
         instruction = move[0]
         unit = int(move[1:])
-        print(move)
+        # print(move)
 
         if instruction == 'F':
             ship.move_forward(unit)
+            nodes.append(ship.pos)
+            edges.append((nodes[-2], nodes[-1]))
         elif instruction in ['L', 'R']:
             ship.turn(instruction, unit)
         elif instruction == 'E':
@@ -74,4 +93,7 @@ if __name__ == "__main__":
             raise "NOT SURE WHAT THIS INSTRUCTION IS"
 
         print(ship)
-    print(ship.manhattan())   
+        
+    print(ship.manhattan())
+
+plot_graph(nodes, edges)
