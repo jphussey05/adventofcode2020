@@ -1,64 +1,49 @@
 class Ship(object):
     def __init__(self):
-        self.direction = 'E'
         self.degree = 90
         self.pos = (0,0)
         self.deg_dict = {0: 'N', 90: 'E', 180: 'S', 270: 'W'}
+        self.waypoint = (10, 1)
         return
 
     def move_forward(self, dist):
-        if self.direction == 'E':
-            self.move_east(dist)
-        elif self.direction == 'W':
-            self.move_west(dist)
-        elif self.direction == 'N':
-            self.move_north(dist)
-        elif self.direction == 'S':
-            self.move_south(dist)
-        else:
-            raise "I don't know what to do with this move!"
+        self.pos = self.pos[0] + dist * self.waypoint[0], self.pos[1] + dist * self.waypoint[1]
         return
-
 
     def move_east(self, dist):
-        self.pos = self.pos[0] + dist, self.pos[1]
+        self.waypoint = self.waypoint[0] + dist, self.waypoint[1]
         return
-
 
     def move_west(self, dist):
-        self.pos = self.pos[0] - dist, self.pos[1]
+        self.waypoint = self.waypoint[0] - dist, self.waypoint[1]
         return
 
-    
     def move_north(self, dist):
-        self.pos = self.pos[0], self.pos[1] + dist
+        self.waypoint = self.waypoint[0], self.waypoint[1] + dist
         return
 
-    
     def move_south(self, dist):
-        self.pos = self.pos[0], self.pos[1] - dist
+        self.waypoint = self.waypoint[0], self.waypoint[1] - dist
         return
 
     def turn(self, turn_dir, deg):
         while deg > 0:
             deg -= 90
-            if turn_dir == 'L':
-                self.degree = (self.degree - 90) % 360
-                
-            if turn_dir == 'R':
-                self.degree = (self.degree + 90) % 360
-        
-        self.direction = self.deg_dict[self.degree]
-        return
 
+            if turn_dir == 'R':
+                self.waypoint = self.waypoint[1], self.waypoint[0] * -1
+            elif turn_dir == 'L':
+                self.waypoint = self.waypoint[1] * -1, self.waypoint[0]
+            else:
+                raise NotImplementedError
+
+        return
 
     def manhattan(self):
         return abs(self.pos[0]) + abs(self.pos[1])
 
-
     def __str__(self):
-        return f'The Ship is curently at {self.pos} and facing {self.direction}'
-
+        return f'{self.pos} at a distance of {self.manhattan()} from origin, the waypoint is {self.waypoint}'
 
 
 if __name__ == "__main__":
@@ -68,6 +53,7 @@ if __name__ == "__main__":
     ship = Ship()
     
     for move in contents:
+
         instruction = move[0]
         unit = int(move[1:])
         print(move)
