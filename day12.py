@@ -55,7 +55,7 @@ def plot_graph(nodes, edges):
     G.add_nodes_from(nodes)
     G.add_edges_from(edges)
 
-    nx.draw(G, node_size=100, with_labels=True, font_size=6)
+    nx.draw(G, node_size=100, with_labels=True, font_size=6, figsize=(100,100))
     plt.savefig('day12.png')
     plt.show()
 
