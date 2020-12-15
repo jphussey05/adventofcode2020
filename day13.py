@@ -25,6 +25,13 @@ def part2(contents):
     buses = [(bus, i) for i, bus in enumerate(contents[1].split(','))]
     print(buses)
     
+    time = int(buses[0][0])
+
+    for i in range(1, len(buses)-1):  # start at bus index 1 until 1 from end
+        print(f'Checking bus {i}')
+        bus_num = int(buses[i][0])
+        next_time = time // bus_num + bus_num
+    
 
 if __name__ == "__main__":
     
