@@ -1,10 +1,11 @@
+from datetime import datetime
+import math
 
 def find_next_arrival(arrival_time, bus):
     bus_time = bus  # assuming we won't arrive from 0 -> first loop
     while bus_time < arrival_time:
         bus_time += bus
     return bus_time - arrival_time
-
 
 def part1(contents):
     arrival_time = int(contents[0])
@@ -21,18 +22,44 @@ def part1(contents):
     print(f'Part 1 answer is {wait_time * best_bus}')
 
 
+def inverse(Ni, ni):
+    print(f'Invers with:\n{Ni}\n{ni}')
+    multiple = Ni % ni
+    remainder = -1
+    x = 1
+    while remainder == -1:
+        if x * multiple % ni == 1:
+            print(x * multiple % ni)
+            print(f'Returning {x}')
+            return x
+        else:
+            x += 1
+
 def part2(contents):
-    buses = [(bus, i) for i, bus in enumerate(contents[1].split(','))]
-    print(buses)
-    
-    time = int(buses[0][0])
+    buses = [bus for bus in contents[1].split(',')]
+    for i, bus in enumerate(buses):
+        if bus != 'x':
+            print(i, bus)
+    bs = [(int(b) - i) % int(b) for i, b in enumerate(buses) if (b != 'x')]
+    ns = [int(b) for i, b in enumerate(buses) if (b != 'x')]
 
-    for i in range(1, len(buses)-1):  # start at bus index 1 until 1 from end
-        print(f'Checking bus {i}')
-        bus_num = int(buses[i][0])
-        next_time = time // bus_num + bus_num
-    
+    for n in ns:
+        N = N * n
+    print(N)
+    NS = [N / n for n in ns]
+    xs = [inverse(Ni, ni) for Ni, ni in zip(NS, ns)]
+    bNx = list(zip(bs, NS, xs))
 
+    items = [combo[0] * combo[1] * combo[2] for combo in bNx]
+    
+    print(f'Remainders {bs}')
+    print(NS)
+    print(xs)
+    print(bNx)
+    print(items)
+    print(sum(items) % N)
+
+    
 if __name__ == "__main__":
     
     with open('day13.txt') as fin:
@@ -40,3 +67,4 @@ if __name__ == "__main__":
 
     # part1(contents)
     part2(contents)
+    
