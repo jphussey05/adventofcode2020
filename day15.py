@@ -41,4 +41,4 @@ if __name__ == "__main__":
 
 for k, v in number_spoken.items():
     if 30000000 in v:
-        print(k, v)
+        print(k)
