@@ -27,16 +27,16 @@ class Point(object):
         return f'Point({self.x}, {self.y}, {self.z}, {self.w}, {self.state})'
 
 
-def count_active_neighbors(point, actives, database):
-    cnt = 0
-    points_to_add = []
-    for adj in point.adjacencies:
-        if adj in actives:   # it's in the db and active
-            cnt += 1
-        elif adj not in database:    # it's not in db, add it
-            points_to_add.append(Point(adj[0], adj[1], adj[2], adj[3], state='inactive'))
+# def count_active_neighbors(point, actives, database):
+#     cnt = 0
+#     points_to_add = []
+#     for adj in point.adjacencies:
+#         if adj in actives:   # it's in the db and active
+#             cnt += 1
+#         elif adj not in database:    # it's not in db, add it
+#             points_to_add.append(Point(adj[0], adj[1], adj[2], adj[3], state='inactive'))
     
-    return cnt, points_to_add
+#     return cnt, points_to_add
 
 
 if __name__ == "__main__":
